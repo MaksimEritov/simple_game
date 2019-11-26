@@ -1,22 +1,31 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var http = require('http');
+/**
+ * NPM package
+ * 
+ */
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const http = require('http');
 
 
-var app = express();
-var server = http.createServer(app);
+/**
+ * Server setup
+ * 
+ */
+const app = express();
+const server = http.createServer(app);
 server.listen(3000)
-// view engine setup
+
+/**
+ *  Express setup
+ *  engine ejs
+ * 
+ */ 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -24,6 +33,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+/**
+ * Router modules
+ * 
+ */
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -44,19 +59,10 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const io = require('socket.io')(server);
 
+/**
+ * Socket setup
+ * 
+ */
 
-io.on('connection', function (socket) {
-  console.log('on')
-  socket.on('new message', function(msg) {
-    console.log(msg);
-    //broadcast message to everyone in port:5000 except yourself.
-    socket.broadcast.emit("received", { message: msg  });
-  });
-});
-
-
-
-
-module.exports = app;
+require('./socket/socket')(server)

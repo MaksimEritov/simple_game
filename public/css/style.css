@@ -1,3 +1,7 @@
+/** 
+ * Main layout
+ */
+
 body {
   font-family: 'Nunito';
 }
@@ -10,6 +14,10 @@ nav .navbar{
   display: flex;
 }
 
+
+/** 
+ * Aside
+ */
 aside {
   width: 250px;
   height:100%;
@@ -36,7 +44,9 @@ aside {
   text-align: center;
 }
 
-
+/** 
+ * chat container
+ */
 .chat-container {
   position: relative;
   display: flex;
@@ -44,13 +54,38 @@ aside {
   border: 2px solid purple;
   border-radius: 20px;
 }
-.chat-container div {
+.chat-container > div {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: 20px;
 }
-.chat-container div h4{
+.chat-container div h4 {
+  position: absolute;
+  top: 20px;
+  width: 100%;
   text-align: center;
 }
+.msg {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.msg p {
+  margin-bottom: 5px;
+} 
+.msg h5 {
+  padding: 2px 15px;
+  background: lightgreen;
+  border-radius: 10px;
+  color: white;
+  border: 1px solid greenyellow;
+} 
 
+/** 
+ * Form
+ */
 .form-container {
   display: flex;
   justify-content: flex-end;
