@@ -1,7 +1,9 @@
 /** 
  * Main layout
  */
-
+html, body, aside, .main-container{
+  height: 100%;
+}
 body {
   font-family: 'Nunito';
 }
@@ -27,6 +29,7 @@ aside {
 .aside-logo {
   width: 100%;
   height: 200px;
+  margin-bottom: 25px;
 }
 .aside-logo img {
   width: 100%;
@@ -35,13 +38,25 @@ aside {
   display: flex;
   flex-direction: column;
   border-top: 2px solid gray;
+  padding-top: 20px;
 }
 .aside-room {
   margin: 15px;
   border-bottom: 1px solid lightgray;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.aside-room.active {
+  background: aliceblue;
+  border-radius: 15px;
+}
+.aside-room:last-child {
+  border-bottom: none;
 }
 .aside-room h4{
   text-align: center;
+  margin-bottom: 0;
 }
 
 /**
@@ -113,7 +128,7 @@ aside {
 }
 .form-container input::placeholder{
   color: aqua;
-  text-align: center;
+  text-align: rigth;
 }
 
 /**

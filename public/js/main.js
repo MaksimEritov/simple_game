@@ -22,7 +22,9 @@ $(document).ready(() => {
    * Sign in / up pages js
    */
   if (window.location.pathname === '/signin') {
-    
+    if (getCookie('token')) {
+      window.location.pathname = '/chat'
+    }
     $(".login-form").submit((e) => {
         e.preventDefault()
         form = $(".login-form")[0]
@@ -50,62 +52,71 @@ $(document).ready(() => {
     })
   }
   if (window.location.pathname === '/registration') {
-      $(".reg-form").submit((e) => {
-          e.preventDefault()
-          form = $(".reg-form")[0]
-          const data = JSON.stringify({
-            user: {
-              username: form[0].value,
-              password: form[1].value
-          }})
-          $.ajax({
-              url: "/api/users/",
-              method: "POST",
-              contentType: 'application/json',
-              data,
-              statusCode: {
-                200: function(res) {
-                  console.log(res)
+    if (getCookie('token')) {
+      window.location.pathname = '/chat'
+    }
+    $(".reg-form").submit((e) => {
+        e.preventDefault()
+        form = $(".reg-form")[0]
+        const data = JSON.stringify({
+          user: {
+            username: form[0].value,
+            password: form[1].value
+        }})
+        $.ajax({
+            url: "/api/users/",
+            method: "POST",
+            contentType: 'application/json',
+            data,
+            statusCode: {
+              200: function(res) {
+                console.log(res)
 
-                  window.location.pathname = '/chat'
-                },
-                406: function(jqXHR) {
-                  $('.reg-form .help-block').show()
-                  
-                  console.log('error :', jqXHR);
-                }
+                window.location.pathname = '/chat'
+              },
+              406: function(jqXHR) {
+                $('.reg-form .help-block').show()
+                
+                console.log('error :', jqXHR);
               }
-          });
-      }
-      )
+            }
+        });
+    })
   }
 
-  /**
-   * Socket identification and events handlers
-   * 
-   * Room chane
-   * New message
-   * Get message
-   */
-  const socket = io.connect(window.location.origin)
-  
-  $('.aside-room').on("click", (e) => {
+  if (window.location.pathname === "/chat") {
+
+    $('nav .nav-item').hide()
+    /**
+     * Socket identification and events handlers
+     * 
+     * Room chane
+     * New message
+     * Get message
+     */
+    const socket = io.connect(window.location.origin)
+    
+    $('.aside-room').on("click", (e) => {
+      $('.aside-room').removeClass('active')
+      e.currentTarget.classList.add('active')
       const room = e.currentTarget.dataset.room
       $('div.msg').remove()
       socket.emit('roomchange',room)
       $('.room-wrapper').show()
-  })
-  $('#chatMessForm').submit((e) => {
-      e.preventDefault();
-      const newMess = $('#chatMess').val()
-      socket.emit('new message', newMess, getCookie('username'));
-      $('#chatMess').val('')
-  })
-  socket.on('getMsg', (msg) => {
-    console.log('getMsg')
-      createMsg(msg.message, msg.sender)
-  })
-
+    })
+    $('#chatMessForm').submit((e) => {
+        e.preventDefault();
+        const newMess = $('#chatMess').val()
+        socket.emit('new message', newMess, getCookie('username'));
+        $('#chatMess').val('')
+    })
+    socket.on('getMsg', (msg) => {
+      console.log('getMsg')
+        createMsg(msg.message, msg.sender)
+    })
+  } else {
+    $('#logout-btn').hide()
+  }
 })
 
 /**
