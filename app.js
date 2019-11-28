@@ -9,6 +9,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const http = require('http');
+const mongoose = require('./db/dbconection')
 
 
 /**
@@ -17,7 +18,8 @@ const http = require('http');
  */
 const app = express();
 const server = http.createServer(app);
-server.listen(3000)
+server.listen(3030)
+
 
 /**
  *  Express setup
@@ -37,11 +39,13 @@ app.use(express.static(path.join(__dirname, 'public')));
  * Router modules
  * 
  */
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+app.use(require('./routes/index'));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use(function(err, req, res, next) {
+  if(401 == err.status) {
+      res.redirect('/signin')
+  }
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -66,3 +70,11 @@ app.use(function(err, req, res, next) {
  */
 
 require('./socket/socket')(server)
+
+/**
+ * User model
+ * 
+ */
+
+require('./models/UserSchema');
+require('./config/passport');

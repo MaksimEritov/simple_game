@@ -1,3 +1,9 @@
+/**
+ * Chat message schema for mongoouse
+ * 
+ * @exports Chat model
+ */
+
 const mongoose = require("mongoose");
 
 const chatSchema = new mongoose.Schema(
@@ -7,6 +13,9 @@ const chatSchema = new mongoose.Schema(
     },
     sender: {
       type: String
+    },
+    room: {
+      type: String
     }
   },
   {
@@ -15,8 +24,6 @@ const chatSchema = new mongoose.Schema(
 );
 
 
-
-
-let Chat = mongoose.model("chat", chatSchema);
+const Chat = mongoose.model("chat", chatSchema);
 
 module.exports = Chat;

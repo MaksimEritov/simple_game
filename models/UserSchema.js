@@ -1,5 +1,18 @@
+/**
+ * User schema for mongoouse
+ * 
+ * @use crypto for crypt password
+ * @use jwt to generate token
+ * 
+ * @exports Chat model
+ */
+
+const mongoose = require("mongoose");
 const crypto = require('crypto');
-const mongoose = require('../libs/mongoose');
+const jwt = require('jsonwebtoken')
+const secret = require('../config/secret').secret
+
+
 
 Schema = mongoose.Schema;
 
@@ -17,45 +30,56 @@ let schema = new Schema({
     type: String,
     required: true
   },
-  created: {
-    type: Date,
-    default: Date.now
-  }
-});
-
-schema.methods.encryptPassword = function(password) {
-  return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
-};
-
-schema.virtual('password')
-  .set(function(password) {
-    this._plainPassword = password;
-    this.salt = Math.random() + '';
-    this.hashedPassword = this.encryptPassword(password);
-  })
-  .get(function() { return this._plainPassword; });
+}, {timestamps: true});
 
 
-schema.methods.checkPassword = function(password) {
-  return this.encryptPassword(password) === this.hashedPassword;
-};
+/**
+ * Generate password method 
+ * 
+ * @param password|string
+ * @return void
+ */
+schema.methods.setPassword = function (password) {
+  this.salt = crypto.randomBytes(16).toString('hex');
+  this.hashedPassword = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex')
+}
 
-schema.statics.authorize = async function(username,password, callback) {
-  let User = this;
-  let currentUser =   await User.findOne({username: username})
-  if (currentUser) {
-      if (currentUser.checkPassword(password)) {
-          callback(null,user)
-      } else {
-          return callback(createError(403, 'Wrong password'))                  
-      }
-  } else {
-      console.log('Creating');
-      let user = new User({username: username, password: password});
-      user.save((err) => {
-          if (err) return next(createError(500, 'Db error'));
-          callback(null,user)
-      }) 
+/**
+ * Password validation method
+ * 
+ * @param password|string
+ * @return void
+ */
+schema.methods.validPassword = function (password) {
+  const hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
+  return this.hashedPassword === hash;
+}
+
+/**
+ * Generate token
+ * 
+ * @return void
+ */
+schema.methods.generateJWT = function () {
+  const today = new Date();
+  const exp = new Date(today);
+  exp.setDate(today.getDate() + 60)
+  return jwt.sign({
+    id: this._id,
+    username: this.username,
+    exp: parseInt(exp.getTime()/1000)
+  }, secret)
+}
+
+/**
+ * Generate data for sending to frontend
+ * 
+ * @return void
+ */
+schema.methods.toAuthJSON = function () {
+  return {
+    username: this.username,
+    token: this.generateJWT(),
   }
 }
 

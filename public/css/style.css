@@ -44,12 +44,23 @@ aside {
   text-align: center;
 }
 
+/**
+ * Room
+ */
+
+.room-wrapper {
+  display: none;
+  max-width: 80%;
+}
+
+
 /** 
  * chat container
  */
 .chat-container {
   position: relative;
   display: flex;
+  min-height: 100px;
   padding: 0 30px 30px 30px;
   border: 2px solid purple;
   border-radius: 20px;
@@ -103,4 +114,22 @@ aside {
 .form-container input::placeholder{
   color: aqua;
   text-align: center;
+}
+
+/**
+ * Sign in
+ */
+
+.signIn-container {
+  width: 60%;
+  margin: 50px auto;
+}
+.signIn-container .help-block{
+  display: none;
+  padding-left: 15px;
+  margin-top: 20px;
+}
+.signIn-container .help-block p{
+  font-size: 20px;
+  color: red;
 }
