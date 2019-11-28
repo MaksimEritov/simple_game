@@ -7,7 +7,7 @@
 
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/test', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://node-chat:fefdi2ki@ds051841.mlab.com:51841/heroku_ncl8xtb4', { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.Promise = global.Promise;
 
 const db = mongoose.connection;
