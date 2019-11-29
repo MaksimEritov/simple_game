@@ -87,12 +87,14 @@ $(document).ready(() => {
   if (window.location.pathname === "/chat") {
 
     $('nav .nav-item').hide()
+
     /**
      * Socket identification and events handlers
      * 
-     * Room chane
+     * Room changr
      * New message
      * Get message
+     * Get message array. Room change handler
      */
     const socket = io.connect(window.location.origin)
     
@@ -107,12 +109,25 @@ $(document).ready(() => {
     $('#chatMessForm').submit((e) => {
         e.preventDefault();
         const newMess = $('#chatMess').val()
-        socket.emit('new message', newMess, getCookie('username'));
-        $('#chatMess').val('')
+        if (newMess) {
+          socket.emit('new message', newMess, getCookie('username'));
+          $('#chatMess').val('')        
+        }
     })
     socket.on('getMsg', (msg) => {
-      console.log('getMsg')
-        createMsg(msg.message, msg.sender)
+      $('.msg-container').append(createMsg(msg.message, msg.sender))       
+    })
+    socket.on('getMsgArray', (msgArr) => {
+      $('.msg-container').pagination({
+        dataSource: msgArr,
+        pageSize: 10,
+        callback: function(data, pagination) {
+          for (let i = 0; i < data.length; i++) {
+            let msg = createMsg(data[i].message, data[i].sender);
+            $('.msg-container').append(msg)
+          }
+      }
+      })
     })
   } else {
     $('#logout-btn').hide()
@@ -136,8 +151,10 @@ const createMsg = (msg, author) => {
     authorContTag.appendChild(authorTag)
     div.appendChild(authorContTag)
     div.appendChild(msgTag)
-    $('.chat-container > div').append(div)
+    // $("div[data-role='msg-container'][data-type='currnet']").append(div)
+    return div
 }
+
 
 /**
  * Cookie manage JavaScripts 

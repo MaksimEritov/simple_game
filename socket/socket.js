@@ -30,9 +30,11 @@ module.exports = function(server) {
             socket.join(socket.room)
             Chat.find({room: socket.room})
                 .then((msg) => {        
-                    for (let i = 0; i < msg.length && i < 20; i++) {
-                        socket.emit('getMsg', msg[i])
-                    }
+                    console.log(msg)
+                    socket.emit('getMsgArray', msg)
+                    // for (let i = 0; i < msg.length && i < 20; i++) {
+                    //     socket.emit('getMsg', msg[i])
+                    // }
                 })
                 .catch((e) => {
                     console.log(e)

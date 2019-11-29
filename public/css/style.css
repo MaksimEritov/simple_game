@@ -102,6 +102,18 @@ aside {
   width: 100%;
   text-align: center;
 }
+.msg-container {
+  margin-top: 30px;
+}
+.paginationjs {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 20px 50px;
+}
+/* .msg-container ul {
+  margin-bottom: 20px;
+} */
+
 .msg {
   display: flex;
   flex-direction: column;
@@ -123,7 +135,7 @@ aside {
  */
 .form-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin: 20px 0;
 }
 .form-container form{
