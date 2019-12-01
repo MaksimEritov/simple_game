@@ -119,6 +119,13 @@ aside {
   flex-direction: column;
   align-items: flex-end;
 }
+.msg.msg-left {
+  align-items: flex-start;
+}
+.msg.msg-left h5 {
+  background: lightblue;
+  border: cadetblue;
+}
 .msg p {
   margin-bottom: 5px;
 } 

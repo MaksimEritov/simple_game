@@ -20,7 +20,7 @@ router.get('/chat', auth.required, function(req, res, next) {
 });
 
 router.get('/', auth.required, function(req, res, next) {
-  res.render('index', { title: 'Chat' });
+  res.redirect('/chat')
 });
 
 /**

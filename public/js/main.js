@@ -103,9 +103,10 @@ $(document).ready(() => {
       e.currentTarget.classList.add('active')
       const room = e.currentTarget.dataset.room
       $('div.msg').remove()
-      socket.emit('roomchange',room)
+      socket.emit('roomchange',room, getCookie('username'))
       $('.room-wrapper').show()
     })
+
     $('#chatMessForm').submit((e) => {
         e.preventDefault();
         const newMess = $('#chatMess').val()
@@ -114,6 +115,7 @@ $(document).ready(() => {
           $('#chatMess').val('')        
         }
     })
+    
     socket.on('getMsg', (msg) => {
       $('.msg-container').append(createMsg(msg.message, msg.sender))       
     })
@@ -146,6 +148,9 @@ const createMsg = (msg, author) => {
     let authorTag = document.createElement('i')
     let msgTag = document.createElement('h5')
     div.classList.add('msg')
+    if(getCookie('username') !== author) {
+      div.classList.add('msg-left')
+    }
     authorTag.innerText = author;
     msgTag.innerText = msg;
     authorContTag.appendChild(authorTag)

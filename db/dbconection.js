@@ -7,7 +7,7 @@
 
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb+srv://node-chat:fefdi2ki@chat-mjstk.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(/* 'mongodb://localhost:27017/test' */'mongodb+srv://node-chat:fefdi2ki@chat-mjstk.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.Promise = global.Promise;
 
 const db = mongoose.connection;
