@@ -97,8 +97,8 @@ $(document).ready(() => {
     });
 
     $("#letsPlayBtn").on("click", () => {
-      $(".player-cards").html('');
-      $("#totalPoints").html('');
+      $(".player-cards").html("");
+      $("#totalPoints").html("");
       $(".game-resault").hide();
       $(".player-stats").hide();
       socket.emit("startGame", currentRoom);
@@ -147,22 +147,26 @@ $(document).ready(() => {
       }
     });
 
-    socket.on("error", (err) => { 
-      console.log(err)
-      alert ('Sorry something went wrong. Please contact to administartion')
-    })
+    socket.on("error", err => {
+      console.log(err);
+      alert("Sorry something went wrong. Please contact to administartion");
+    });
 
-    socket.on("gameResults", (data) => {
-      let cards = '';
-      data.cards.forEach(card => { 
-        cards += `<h5>${card.name} ${card.suit}, ${card.points} point(s)<h5>`
-      })
+    socket.on("gameResults", data => {
+      let cards = "";
+      data.cards.forEach(card => {
+        let classname = "black";
+        if (card.suit === "&#9829;" || card.suit === "&#9830;") {
+          classname = "red";
+        }
+        cards += `<h5>${card.name} <span class=${classname}>${card.suit}</span>,<br /> ${card.points} point(s)<h5>`;
+      });
       if (data.winner === true) {
-        $(".game-resault").html("You win!");
-      } else if (data.winner === 'draw') {
-        $(".game-resault").html("It's draw");
-      } else { 
-        $(".game-resault").html("You lose((");
+        $(".game-resault").attr("src", "../images/win.png");
+      } else if (data.winner === "draw") {
+        $(".game-resault").attr("src", "../images/draw.png");
+      } else {
+        $(".game-resault").attr("src", "../images/lose.png");
       }
 
       $(".player-cards").html(cards);
@@ -170,7 +174,6 @@ $(document).ready(() => {
       $(".player-stats").show();
       $(".game-resault").show();
     });
-
   } else {
     $("#logout-btn").hide();
   }

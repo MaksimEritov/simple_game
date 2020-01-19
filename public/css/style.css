@@ -135,7 +135,11 @@ aside {
 }
 
 .person-container .main-player-holder .letsPlay-holder {
+  display: flex;
+  flex-direction: column;
   margin-top: auto;
+  align-items: center;
+  justify-content: center;
 }
 .person-container .letsPlay-holder .lets-play-btn {
   display: none;
@@ -172,4 +176,11 @@ aside {
 .signIn-container .help-block p {
   font-size: 20px;
   color: red;
+}
+
+span.red {
+  color: red;
+}
+span.black {
+  color: black;
 }

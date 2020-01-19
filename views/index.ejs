@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
   <%- include('./layout/head.ejs'); %>
   <body>
     <%- include('./layout/header.ejs'); %>
@@ -10,49 +9,60 @@
       <div class="container-fluid room-wrapper">
         <div class="row">
           <div class="col-12">
-            <div class='greetings-container'>
-                <h4>Hello stranger!!!</h4>
+            <div class="greetings-container">
+              <h4>Hello stranger!!!</h4>
             </div>
-  
           </div>
         </div>
         <div class="row person-container">
-          <div class='col-4'>
+          <div class="col-4">
             <div class="card">
-              <img class="card-img-top" src="../images/anon.png" alt="Card image cap">
+              <img
+                class="card-img-top"
+                src="../images/anon.png"
+                alt="Card image cap"
+              />
               <div class="card-body">
                 <h5 class="card-title">Player 1</h5>
-                <h4 class="btn btn-primary addBot" id='addBot1' data-player='1'>Not Active</h4>
+                <h4 class="btn btn-primary addBot" id="addBot1" data-player="1">
+                  Not Active
+                </h4>
               </div>
             </div>
           </div>
-          <div class='col-4'>
-            <div class='main-player-holder'>
-              <div class='letsPlay-holder'>
-                <h3 id='resault' class='game-resault'>You win!</h3>
-                <h4 id='waitMsg' class='wait-msg'>Wait for another players</h4>
-                <button class='btn btn-danger lets-play-btn' id='letsPlayBtn'>Let's Play</button>
+          <div class="col-4">
+            <div class="main-player-holder">
+              <div class="letsPlay-holder">
+                <img id="resault" class="game-resault" />
+                <h4 id="waitMsg" class="wait-msg">Wait for another players</h4>
+                <button class="btn btn-danger lets-play-btn" id="letsPlayBtn">
+                  Let's Play
+                </button>
               </div>
-              <div class='player-stats'>
-                <h4 id='totalPoints'></h4>
-                <div class='player-cards'>
-                </div>
+              <div class="player-stats">
+                <h4 id="totalPoints"></h4>
+                <div class="player-cards"></div>
               </div>
-              <img src="../images/person2.png" alt="Player">
+              <img src="../images/person2.png" alt="Player" />
             </div>
           </div>
-          <div class='col-4'>
-              <div class="card">
-                <img class="card-img-top" src="../images/anon.png" alt="Card image cap">
-                <div class="card-body">
-                  <h5 class="card-title">Player 2</h5>
-                  <h4 class="btn btn-primary addBot" id='addBot2' data-player='2'>Not Active</h4>
-                </div>
+          <div class="col-4">
+            <div class="card">
+              <img
+                class="card-img-top"
+                src="../images/anon.png"
+                alt="Card image cap"
+              />
+              <div class="card-body">
+                <h5 class="card-title">Player 2</h5>
+                <h4 class="btn btn-primary addBot" id="addBot2" data-player="2">
+                  Not Active
+                </h4>
               </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   </body>
 </html>
