@@ -88,6 +88,7 @@ $(document).ready(() => {
     let currentRoom = null;
 
     $(".aside-room").on("click", e => {
+      $(".game-resault").hide();
       if (currentRoom) {
         socket.emit("roomOut", currentRoom);
       }
@@ -152,10 +153,9 @@ $(document).ready(() => {
     })
 
     socket.on("gameResults", (data) => {
-      console.log(data);
       let cards = '';
       data.cards.forEach(card => { 
-        cards += `<h4>${card.name} ${card.suit}, ${card.points} point(s)<h4>`
+        cards += `<h5>${card.name} ${card.suit}, ${card.points} point(s)<h5>`
       })
       if (data.winner === true) {
         $(".game-resault").html("You win!");
@@ -169,10 +169,6 @@ $(document).ready(() => {
       $("#totalPoints").html(`Total points: ${data.points}`);
       $(".player-stats").show();
       $(".game-resault").show();
-    });
-    
-    socket.on("test", txt => {
-      console.log(txt);
     });
 
   } else {
