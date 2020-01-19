@@ -25,14 +25,7 @@ module.exports = function (socket, io) {
         return res;
         }, results);
 
-        winnerPoints = results.reduce((res, player) => {
-            if (res < player.points) {
-                res = player.points;
-                player.winner = true;
-            } else {
-                player.winner = false;
-            }
-        }, 0);
+        winnerPoints = findWinner(results);
 
         io.in(room).clients((err, clients) => {
             if (err) io.to(room).emit('error', err)
@@ -48,7 +41,6 @@ module.exports = function (socket, io) {
                 });
             });
         });
-        console.log(results);
 
     })
 }
@@ -60,3 +52,30 @@ const getRandomValWithDelete = (arr, removeItem) => {
   if (removeItem) arr.splice(randomIndex, 1);
   return randomValue;
 };
+
+const findWinner = array => {
+    findWinner.maxPoints = Math.max.apply(
+        Math,
+        array.map(player => {
+        return player.points;
+        })
+    );
+    array.forEach(player => {
+        player.points === findWinner.maxPoints
+        ? (player.winner = true)
+        : (player.winner = false);
+    });
+
+    findWinner.winnersCount = array.reduce((num, player) => {
+        if (player.winner) num++;
+        return num;
+    }, null);
+
+    if (findWinner.winnersCount > 1) {
+        array.forEach(player => {
+        player.winner === true ? (player.winner = "draw") : null;
+        });
+    }
+    return findWinner.maxPoints;
+};
+

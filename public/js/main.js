@@ -152,15 +152,19 @@ $(document).ready(() => {
     })
 
     socket.on("gameResults", (data) => {
+      console.log(data);
       let cards = '';
       data.cards.forEach(card => { 
         cards += `<h4>${card.name} ${card.suit}, ${card.points} point(s)<h4>`
       })
-      if (data.winner) {
+      if (data.winner === true) {
         $(".game-resault").html("You win!");
+      } else if (data.winner === 'draw') {
+        $(".game-resault").html("It's draw");
       } else { 
         $(".game-resault").html("You lose((");
       }
+
       $(".player-cards").html(cards);
       $("#totalPoints").html(`Total points: ${data.points}`);
       $(".player-stats").show();
