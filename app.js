@@ -26,7 +26,7 @@ server.listen(port, function() {
 
 /**
  *  Express setup
- *  engine ejs
+ *  Engine ejs
  * 
  */ 
 app.set('views', path.join(__dirname, 'views'));

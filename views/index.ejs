@@ -10,42 +10,47 @@
       <div class="container-fluid room-wrapper">
         <div class="row">
           <div class="col-12">
-            <div class='chat-container'>
-              <div>
-                <h4>Welcome back!!!</h4>
-                <div class='msg-container'>
-                  <!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item">
-                      <a class="nav-link active" id="page-tab-1" data-toggle="tab" href="#page1" role="tab" aria-controls="page1" aria-selected="true">Page 1</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#page2" role="tab" aria-controls="page2" aria-selected="false">Page 2</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#page3" role="tab" aria-controls="page3" aria-selected="false">Page 3</a>
-                    </li>
-                  </ul>
-                  <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="page1" data-role="msg-container" data-type="currnet" role="tabpanel" aria-labelledby="page1"></div>
-                    <div class="tab-pane fade" id="page2" role="tabpanel" aria-labelledby="page2">Page 2 </div>
-                    <div class="tab-pane fade" id="page3" role="tabpanel" aria-labelledby="page3">Page 1 </div>
-                  </div> -->
-                </div>
-                <div class="msg">
-                  <p><i>Name</i></p>
-                  <h5>msg</h5>
-                </div>
-              </div>
-            </div>
-            <div class="form-container">
-              <form id="chatMessForm">
-                <input type="text" id="chatMess" name="message" placeholder="Enter new message">
-              </form>
+            <div class='greetings-container'>
+                <h4>Hello stranger!!!</h4>
             </div>
   
           </div>
         </div>
-  
+        <div class="row person-container">
+          <div class='col-4'>
+            <div class="card">
+              <img class="card-img-top" src="../images/anon.png" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Player 1</h5>
+                <btn class="btn btn-primary addBot" id='addBot1' data-player='1'>Add Bot</btn>
+              </div>
+            </div>
+          </div>
+          <div class='col-4'>
+            <div class='main-player-holder'>
+              <div class='letsPlay-holder'>
+                <h3 id='resault' class='game-resault'>You win!</h3>
+                <h4 id='waitMsg' class='wait-msg'>Wait for another players</h4>
+                <button class='btn btn-danger lets-play-btn' id='letsPlayBtn'>Let's Play</button>
+              </div>
+              <div class='player-stats'>
+                <h4 id='totalPoints'></h4>
+                <div class='player-cards'>
+                </div>
+              </div>
+              <img src="../images/person2.png" alt="Player">
+            </div>
+          </div>
+          <div class='col-4'>
+              <div class="card">
+                <img class="card-img-top" src="../images/anon.png" alt="Card image cap">
+                <div class="card-body">
+                  <h5 class="card-title">Player 2</h5>
+                  <btn class="btn btn-primary addBot" id='addBot2' data-player='2'>Add Bot</btn>
+                </div>
+              </div>
+          </div>
+        </div>
       </div>
     </div>
 

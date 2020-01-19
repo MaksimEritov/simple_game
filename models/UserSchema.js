@@ -4,7 +4,7 @@
  * @use crypto for crypt password
  * @use jwt to generate token
  * 
- * @exports Chat model
+ * @exports User model
  */
 
 const mongoose = require("mongoose");

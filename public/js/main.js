@@ -3,228 +3,247 @@
  */
 
 $(document).ready(() => {
-
   /**
    * Logout button handler
    */
-  $('#logout-btn').on('click', () => {
-    console.log('logout')
-    if (getCookie('username')) {
-      deleteCookie('username')
+  $("#logout-btn").on("click", () => {
+    if (getCookie("username")) {
+      deleteCookie("username");
     }
-    if (getCookie('token')) {
-      deleteCookie('token')
+    if (getCookie("token")) {
+      deleteCookie("token");
     }
-    window.location.pathname = "/signin"
+    window.location.pathname = "/signin";
   });
 
   /**
    * Sign in / up pages js
    */
-  if (window.location.pathname === '/signin') {
-    if (getCookie('token')) {
-      window.location.pathname = '/chat'
-    }
-    $(".login-form").submit((e) => {
-        e.preventDefault()
-        form = $(".login-form")[0]
-        const data = JSON.stringify({
-          user: {
-            username: form[0].value,
-            password: form[1].value
-        }})
-        $.ajax({
-            url: "/api/users/signin",
-            method: "POST",
-            contentType: 'application/json',
-            data,
-            statusCode: {
-              200: function(res) {
-                window.location.pathname = '/chat'
-              },
-              401: function(jqXHR) {
-                $('.signIn-container .help-block').show()
-                
-                console.log('error :', jqXHR);
-              }
-            }
-        });
-    })
+  if (window.location.pathname === "/signin") {
+    $(".login-form").submit(e => {
+      e.preventDefault();
+      form = $(".login-form")[0];
+      const data = JSON.stringify({
+        user: {
+          username: form[0].value,
+          password: form[1].value
+        }
+      });
+      $.ajax({
+        url: "/api/users/signin",
+        method: "POST",
+        contentType: "application/json",
+        data,
+        statusCode: {
+          200: function(res) {
+            window.location.pathname = "/game";
+          },
+          401: function(jqXHR) {
+            $(".signIn-container .help-block").show();
+            console.log("error :", jqXHR);
+          }
+        }
+      });
+    });
   }
-  if (window.location.pathname === '/registration') {
-    if (getCookie('token')) {
-      window.location.pathname = '/chat'
-    }
-    $(".reg-form").submit((e) => {
-        e.preventDefault()
-        form = $(".reg-form")[0]
-        const data = JSON.stringify({
-          user: {
-            username: form[0].value,
-            password: form[1].value
-        }})
-        $.ajax({
-            url: "/api/users/",
-            method: "POST",
-            contentType: 'application/json',
-            data,
-            statusCode: {
-              200: function(res) {
-                console.log(res)
+  if (window.location.pathname === "/registration") {
+    $(".reg-form").submit(e => {
+      e.preventDefault();
+      form = $(".reg-form")[0];
+      const data = JSON.stringify({
+        user: {
+          username: form[0].value,
+          password: form[1].value
+        }
+      });
+      $.ajax({
+        url: "/api/users/",
+        method: "POST",
+        contentType: "application/json",
+        data,
+        statusCode: {
+          200: function(res) {
+            console.log(res);
 
-                window.location.pathname = '/chat'
-              },
-              406: function(jqXHR) {
-                $('.reg-form .help-block').show()
-                
-                console.log('error :', jqXHR);
-              }
-            }
-        });
-    })
+            window.location.pathname = "/game";
+          },
+          406: function(jqXHR) {
+            $(".reg-form .help-block").show();
+
+            console.log("error :", jqXHR);
+          }
+        }
+      });
+    });
   }
 
-  if (window.location.pathname === "/chat") {
-
-    $('nav .nav-item').hide()
+  if (window.location.pathname === "/game") {
+    $("nav .nav-item").hide();
 
     /**
      * Socket identification and events handlers
-     * 
-     * Room changr
-     * New message
-     * Get message
-     * Get message array. Room change handler
+     *
      */
-    const socket = io.connect(window.location.origin)
-    
-    $('.aside-room').on("click", (e) => {
-      $('.aside-room').removeClass('active')
-      e.currentTarget.classList.add('active')
-      const room = e.currentTarget.dataset.room
-      $('div.msg').remove()
-      socket.emit('roomchange',room, getCookie('username'))
-      $('.room-wrapper').show()
-    })
+    const socket = io.connect(window.location.origin);
+    let currentRoom = null;
 
-    $('#chatMessForm').submit((e) => {
-        e.preventDefault();
-        const newMess = $('#chatMess').val()
-        if (newMess) {
-          socket.emit('new message', newMess, getCookie('username'));
-          $('#chatMess').val('')        
-        }
-    })
-    
-    socket.on('getMsg', (msg) => {
-      $('.msg-container').append(createMsg(msg.message, msg.sender))       
-    })
-    socket.on('getMsgArray', (msgArr) => {
-      $('.msg-container').pagination({
-        dataSource: msgArr,
-        pageSize: 10,
-        callback: function(data, pagination) {
-          for (let i = 0; i < data.length; i++) {
-            let msg = createMsg(data[i].message, data[i].sender);
-            $('.msg-container').append(msg)
-          }
+    $(".aside-room").on("click", e => {
+      if (currentRoom) {
+        socket.emit("roomOut", currentRoom);
       }
-      })
+      currentRoom = e.currentTarget.dataset.room;
+      socket.emit("roomIn", currentRoom);
+    });
+
+    $("#letsPlayBtn").on("click", () => {
+      $(".player-cards").html('');
+      $("#totalPoints").html('');
+      $(".game-resault").hide();
+      $(".player-stats").hide();
+      socket.emit("startGame", currentRoom);
+    });
+
+    socket.on("roomAccept", (room, members) => {
+      $(".aside-room").removeClass("active");
+      $(`.aside-room[data-room='${room}']`).addClass("active");
+      if (members === 1) {
+        $("#addBot1").hide();
+        $("#addBot2").show();
+      } else if (members === 2) {
+        $("#addBot1").hide();
+        $("#addBot2").hide();
+      } else {
+        $("#addBot1").show();
+        $("#addBot2").show();
+      }
+      $(".room-wrapper").show();
+    });
+
+    socket.on("roomFull", () => {
+      alert("Sorry, room is full. Choose another room");
+    });
+
+    socket.on("roomReadyHeandler", bull => {
+      if (bull) {
+        $(".wait-msg").hide();
+        $(".lets-play-btn").show();
+      } else {
+        $(".lets-play-btn").hide();
+        $(".wait-msg").show();
+      }
+    });
+
+    socket.on("roomMemChange", members => {
+      if (members === 1) {
+        $("#addBot1").hide();
+        $("#addBot2").show();
+      } else if (members === 2) {
+        $("#addBot1").hide();
+        $("#addBot2").hide();
+      } else {
+        $("#addBot1").show();
+        $("#addBot2").show();
+      }
+    });
+
+    socket.on("error", (err) => { 
+      console.log(err)
+      alert ('Sorry something went wrong. Please contact to administartion')
     })
+
+    socket.on("gameResults", (data) => {
+      let cards = '';
+      data.cards.forEach(card => { 
+        cards += `<h4>${card.name} ${card.suit}, ${card.points} point(s)<h4>`
+      })
+      if (data.winner) {
+        $(".game-resault").html("You win!");
+      } else { 
+        $(".game-resault").html("You lose((");
+      }
+      $(".player-cards").html(cards);
+      $("#totalPoints").html(`Total points: ${data.points}`);
+      $(".player-stats").show();
+      $(".game-resault").show();
+    });
+    
+    socket.on("test", txt => {
+      console.log(txt);
+    });
+
   } else {
-    $('#logout-btn').hide()
+    $("#logout-btn").hide();
   }
-})
+});
 
 /**
- * Render message to DOM
- * 
- * @param msg|sting
- * @param author|sting
- */
-const createMsg = (msg, author) => {
-    let div = document.createElement('div')
-    let authorContTag = document.createElement('p')
-    let authorTag = document.createElement('i')
-    let msgTag = document.createElement('h5')
-    div.classList.add('msg')
-    if(getCookie('username') !== author) {
-      div.classList.add('msg-left')
-    }
-    authorTag.innerText = author;
-    msgTag.innerText = msg;
-    authorContTag.appendChild(authorTag)
-    div.appendChild(authorContTag)
-    div.appendChild(msgTag)
-    // $("div[data-role='msg-container'][data-type='currnet']").append(div)
-    return div
-}
-
-
-/**
- * Cookie manage JavaScripts 
+ * Cookie manage JavaScripts
  */
 
 /**
- * Get cookie function 
- * 
+ * Get cookie function
+ *
  * @param name: string
  * @return cookie value: string / undefined
  */
 
-const getCookie = (name) => {
-  let matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"
-  ));
+const getCookie = name => {
+  let matches = document.cookie.match(
+    new RegExp(
+      "(?:^|; )" +
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+        "=([^;]*)"
+    )
+  );
   return matches ? decodeURIComponent(matches[1]) : undefined;
 };
 
 /**
-* Delete cookie function 
-* 
-* @param name: string
-* @void
-*/
+ * Delete cookie function
+ *
+ * @param name: string
+ * @void
+ */
 
-const deleteCookie = (name) => {
+const deleteCookie = name => {
   setCookie(name, "", {
-      "max-age": -1
+    "max-age": -1
   });
 };
 
 /**
-* Set cookie function 
-* 
-* @param name: string
-* @param value: string
-* @param options: object. Example: {secure: true, 'max-age': 3600} 
-* @void
-* 
-* Example:
-* setCookie('user', 'John', {secure: true, 'max-age': 3600});
-* 
-*/
-const setCookie = (name, value, options = {})  =>  {
-
+ * Set cookie function
+ *
+ * @param name: string
+ * @param value: string
+ * @param options: object. Example: {secure: true, 'max-age': 3600}
+ * @void
+ *
+ * Example:
+ * setCookie('user', 'John', {secure: true, 'max-age': 3600});
+ *
+ */
+const setCookie = (name, value, options = {}) => {
   options = {
-      path: "/",
-      expires: new Date ( 2025, 10, 20 ),
-      // при необходимости добавьте другие значения по умолчанию
-      ...options
+    path: "/",
+    expires: new Date(2025, 10, 20),
+    // при необходимости добавьте другие значения по умолчанию
+    ...options
   };
 
   if (options.expires.toUTCString) {
-      options.expires = options.expires.toUTCString();
+    options.expires = options.expires.toUTCString();
   }
 
-  let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+  let updatedCookie =
+    encodeURIComponent(name) + "=" + encodeURIComponent(value);
 
   for (let optionKey in options) {
-      updatedCookie += "; " + optionKey;
-      let optionValue = options[optionKey];
-      if (optionValue !== true) {
-          updatedCookie += "=" + optionValue;
-      }
+    updatedCookie += "; " + optionKey;
+    let optionValue = options[optionKey];
+    if (optionValue !== true) {
+      updatedCookie += "=" + optionValue;
+    }
   }
 
   document.cookie = updatedCookie;

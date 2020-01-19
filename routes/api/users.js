@@ -72,7 +72,6 @@ return passport.authenticate(
         { session: false }, 
         (err, passportUser, info) => {
             if (err) next(err);
-            console.log('in')
             if (passportUser) {
                 
                 const user = passportUser;
